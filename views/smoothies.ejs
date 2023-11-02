@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmFlavor HomePage</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://kit.fontawesome.com/e0dabf3899.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e0dabf3899.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+            font-family: 'Poppins',sans-serif;
+    
+    
+        }
+
+        .header{
+            background-color: #147c53;
+            display:flex;
+        }
+        .logo{
+            color:beige;
+            font-size: 27px;
+            padding-left:100px;
+            padding-top:20px;
+            padding-bottom:20px;
+        }
+        
+        .wrapper {
+            width: 100%;
+            max-width: 29.25rem;
+            padding-top: 18px;
+            margin-left: 150px;
+            
+        }
+        
+        
+        
+        .searchBar {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        
+        #searchQueryInput {
+            width: 100%;
+            height: 2.7rem;
+            background: #f5f5f5;
+            outline: none;
+            border: none;
+            border-radius: 1.625rem;
+            padding: 0 3.5rem 0 1.5rem;
+            font-size: 1rem;
+        }
+        
+        #searchQuerySubmit {
+            width: 3.5rem;
+            height: 2.8rem;
+            margin-left: -3.5rem;
+            background: #e76712;
+            border: none;
+            outline: none;
+        }
+        
+        #searchQuerySubmit:hover {
+            cursor: pointer;
+        }
+        #logout-btn, #mycart-btn{
+            background-color: #fff;
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            border:0;
+            
+        }
+        .logout{
+            padding-top: 20px;
+            margin-left: 145px;
+        }
+        .mycart{
+            padding-top: 20px;
+            margin-left: 30px;
+        }
+        .customer-care{
+            padding-top: 24px;
+            margin-left:38px;
+            
+        }
+        #xyz{
+            margin-right:8px;
+        }
+        #customer-care-number{
+        
+            color:#ffff;
+        }
+        .sub-header{
+            padding-top:20px;
+            padding-bottom: 20px;;
+            background-color: #f1fbf7e1;
+            display:flex;
+            
+            
+        }
+        .sub-header a{
+            margin-right:20px;
+            text-decoration:none;
+            color:black;
+        }
+        #active-link{
+            margin-left:10px;
+        }
+        .sub-header-right{
+            margin-left: 450px;
+        }
+        
+        .sub-header-left{
+            padding-left: 92px;
+        }
+        .transition-header{
+            display:flex;
+            justify-content: space-evenly;
+        }
+        .box1{
+            margin-top: 18px;
+        }
+        .box2{
+            margin-top: 12px;
+        }
+        .box3{
+            margin-top: 13px;
+        }
+        .box4{
+            margin-top: 12px;
+        }
+        .box5{
+            margin-top: 12px;
+        }
+        .box6{
+            margin-top: 8px;
+        }
+        .homepage-slides{
+            
+            height:10%;
+            width:100%;
+            display:flex;
+            
+        }
+        .swiper{
+            width:100%;
+            height:fit-content;
+        }
+        .swiper-slide img{
+            width:100%;
+            height:80vh;
+            
+            object-fit: cover;
+            object-position: center;
+            image-rendering: auto;
+        
+            
+            
+        }
+        .container{
+            display:flex;
+            justify-content: space-evenly; 
+            margin-top:10px;
+
+        }
+        .sub-container-img{
+            width:350px;
+            height:250px;
+
+            
+        }
+        .sub-container-img img{
+            
+            width:100%;
+            height:100%;
+            object-fit: contain;
+            
+
+        }
+        .sub-container-coffee,.sub-container-honey,.sub-container-pommegranade{
+            cursor:pointer;
+            transition:1s;
+            display:flex;
+            width:380px;
+            height:220px;
+            border-radius: 16px;
+            padding-left:20px;
+            padding-right:20px;
+            box-shadow: 0 0 10px 2px rgba(0,0,0,0.4);
+            
+            
+        }
+        .sub-container-coffee:hover,.sub-container-honey:hover,.sub-container-pommegranade:hover{
+            z-index:2;
+            transform:scale(1.1);
+        }
+        .sub-container-coffee{
+            background-color: #ecae858c;
+        }
+        .sub-container-honey{
+            background-color: #ecae858c;
+        }
+        .sub-container-pommegranade{
+            background-color: #ecae858c;
+        }
+        .sub-container-text-heading{
+            color:#e76712;
+            padding-top: 30px;
+            text-align: left;
+        }
+        .honey-rem-text{
+            font-size: 11px;
+            color:#e76712;
+            font-weight: 500px;
+            
+        }
+        
+        .our-exotic-picks-heading{
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Poppins',sans-serif;
+        }
+        .our-exotic-picks-heading p{
+            font-size: 12px;
+            text-align: center;
+            font-family: 'Poppins',sans-serif;
+            color:grey;
+        }
+        #exotic-fruits{
+            
+            flex-wrap: wrap;
+            display:flex;
+            justify-content: space-evenly;
+        }
+        .exotic-fruits-content{
+            margin-left:15px;
+            margin-right:15px;
+            width:250px;
+            height:350px;
+            text-align: center;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            margin-top:50px;
+            background-image: linear-gradient(rgba(206, 245, 133, 0.993),rgb(226, 240, 151));
+            border-radius:10px;
+        }
+        .exotic-fruits-content img{
+            width:250px;
+            height:250px;
+            
+        }
+        .corporate-partners{
+            
+            overflow-y:hidden ;
+            overflow-x:auto;
+            display:flex;
+        
+            margin-left:80px;
+            
+        }
+        .corporate-partner-items{
+            margin-top:40px;
+            min-width:160px;
+            min-height:120px;
+            
+            margin-right:80px;
+            
+            background-color:#fff;
+            
+            
+        }
+        .corporate-partners::-webkit-scrollbar{
+            width:0;
+        }
+        .corporate-partner-items img{
+            height:100%;
+            width:100%;
+            object-fit: contain;
+        }
+        .our-partners-heading{
+            margin-top:40px;
+            text-align:center;
+            font-size: 20px;
+        }
+        .hot-deals-heading{
+            text-align:center;
+            color:red;
+        }
+        .hot-deals{
+            margin-top:25px;
+            display:flex;
+        }
+        .hot-deals-left-1,.hot-deals-left-2,.hot-deals-left-3{
+            width:380px;
+            height:280px;
+            margin-left:80px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+            border-radius:20px;
+            
+            margin-bottom:15px;
+            overflow: hidden;
+            color:#fff;
+            
+        }
+        .hot-deals-left-1 img,.hot-deals-left-2 img,.hot-deals-left-3 img{
+            width:100%;
+            height:100%;
+            
+            object-fit: cover;
+            -webkit-mask-image: linear-gradient(45deg,#000 25%,rgba(0,0,0,.2) 50%,#000 55%);
+            mask-image: linear-gradient(45deg,#000 25%,rgba(0,0,0,.2) 50%,#000 55%);
+            -webkit-mask-size: 600%;
+            mask-size: 600%;
+            -webkit-mask-position: 0;
+            mask-position: 0;
+            
+        }
+        .hot-deals-left img:hover {
+            transition: mask-position 2s ease,-webkit-mask-position 2s ease;
+            -webkit-mask-position: 120%;
+            mask-position: 120%;
+            opacity: 1;
+        }
+        .hot-deals-right-items{
+        
+        width:350px;
+        height:auto;
+        margin-bottom:20px;
+        margin-right:10px;
+        display:flex;
+        border-radius:10px;
+        box-shadow: 0 0 10px 2px rgba(0,0,0,0.5);
+        
+        }
+        
+        #hot-deals-right{
+        display:flex;
+        padding-left:50px;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        
+        }
+        .hot-deals-right-items-left{
+        
+        width:175px;
+        height:175px;
+        
+        }
+        .hot-deals-right-items-left img{
+        width:100%;
+        height:100%;
+        width:175px;
+        object-fit: contain;
+        }
+        .add-to-cart-btn {
+            margin-top:10px;
+            background-color: #147c53;
+            color: #fff;
+            border-radius: 10px;
+            border: none;
+            padding: 1px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #0f6d47; /* Darker blue on hover */
+        }
+        
+
+
+    </style>
+</head>
+<body>
+    <!--Header No.1 (Green color wala)-->
+    <div class="header">
+        <div class="logo">
+            FarmFlavor
+        </div>
+        <div class="wrapper">
+  
+            <div class="searchBar">
+              <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Search Dish Name to automatically Add Products" value="" />
+              <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit" onclick="handleAiClick()" style="background-color: #147c53;color: white;">
+                AI Search
+              </button>
+            </div>
+            
+        </div>
+        <div class="logout">
+            <a href="/logout"><button id="logout-btn"><i class="fa-solid fa-right-from-bracket fa-lg" style="color: #147c53;"></i></i></i></button></a>
+        </div>
+        <div class="mycart">
+            <a href="/mycart"><button id="mycart-btn"><i class="fa-solid fa-basket-shopping fa-lg" style="color: #147c53;"></i></i></button></a>
+        </div>
+        <div class="customer-care">
+            <p id="customer-care-number"><i id="xyz" class="fa-solid fa-headphones fa-xl" style="color: #ffff;"></i>9020102010</p>
+        </div>      
+    </div>
+    <!--Header No. 2 (White color wala)-->
+    <div class="sub-header">
+        <div class="sub-header-left">
+            <a href="/products">Products</a>
+            <a href="/mywallet">My Wallet</a>
+            <a href="/myorders">My Orders</a>
+            <a href="#contactus">Contact</a>
+            <a href="#hotdeals">Hot Deals <i class="fa-solid fa-fire" style="color: #ff0000;"></i></a>
+        </div>
+        <div class="sub-header-right">
+            <a href="#"><i class="fa-brands fa-facebook fa-xl" style="color: #a1d9c3;"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram fa-xl" style="color: #a1d9c3;"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter fa-xl"style="color: #a1d9c3;"></i></a>
+            <a href="#"><i class="fa-brands fa-pinterest fa-xl"style="color: #a1d9c3;"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube fa-xl"style="color: #a1d9c3;"></i></a>
+        </div>
+    </div>
+
+    <!--***********************************Small logos showing categories**************************************-->
+
+
+    <div class="transition-header">
+        <div class="box1">
+            <img src="bg4.png">
+        </div>
+        <div class="box2">
+            <img src="bg5.png">
+        </div>
+        <div class="box3">
+            <img src="bg6.png">
+        </div>
+        <div class="box4">
+            <img src="bg7.png">
+        </div>
+        <div class="box5">
+            <img src="bg8.png">
+        </div>
+        <div class="box6">
+            <img src="bg9.png">
+        </div>
+
+    </div>
+    <!--*****************************************Slide krne wala part**************************************-->
+    <div class="homepage-slides">
+        <!-- Slider main container -->
+        <div class="swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide"><img src="peach.png"></div>
+            <div class="swiper-slide"><img src="greenapple.png"></div>
+            <div class="swiper-slide"><img src="mango.png"></div>
+            
+            
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+        
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        
+            
+        </div>
+    </div>
+    <!--*****************************************8Boxes below presentation slide******************************-->
+    <div class="container">
+        <div class="sub-container-honey">
+            <div class="sub-container-img">
+                <img src="honey.png">
+
+            </div>
+            <div class="sub-container-text">
+                <div class="sub-container-text-heading">
+                    <h2>Honey</h2>
+                </div>
+                <p class="honey-rem-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe eum aliquid eaque at cum sed?</p>
+                <p class="honey-rem-text">Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+            </div>
+            
+        </div>
+        <div class="sub-container-pommegranade">
+            <div class="sub-container-img">
+                <img src="pommegranade.png">
+
+            </div>
+            <div class="sub-container-text">
+                <div class="sub-container-text-heading">
+                    <h2>Pommegranade</h2>
+                </div>
+                <p class="honey-rem-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe eum aliquid eaque at cum sed?</p>
+                <p class="honey-rem-text">Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+            </div>
+        </div>
+        <div class="sub-container-coffee">
+            <div class="sub-container-img">
+                <img src="coffee.png">
+
+            </div>
+            <div class="sub-container-text">
+                <div class="sub-container-text-heading">
+                    <h2>Coffee</h2>
+                </div>
+                
+                <p class="honey-rem-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe eum aliquid eaque at cum sed?</p>
+                <p class="honey-rem-text">Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <!--******************************************Exotic Picks******************************************-->
+    <div class="our-exotic-picks-heading">
+        <h1>Our Exotic Picks</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis.</p>
+        <p>Ducimus asperiores sit, modi debitis nemo sapiente incidunt blanditiis!</p>
+        <p>Minima quisquam laudantium quod accusantium mollitia vero eos excepturi!</p>
+    </div>
+    
+    <div id="exotic-fruits">
+    </div>
+
+    <!--Our Corporate Partners-->
+
+    <div class="our-partners-heading">
+        <h1>Our Corporate Partners</h1>
+        
+    </div>
+
+    <div class="corporate-partners">
+        <div class="corporate-partner-items"><img src="icici.png"></div>
+        <div class="corporate-partner-items"><img src="doordash.png"></div>
+        <div class="corporate-partner-items"><img src="easebuzz.png"></div>
+        <div class="corporate-partner-items"><img src="moengage.png"></div>
+        <div class="corporate-partner-items"><img src="uber.jpg"></div>
+        <div class="corporate-partner-items"><img src="axis.jpg"></div>
+        <div class="corporate-partner-items"><img src="costco.png"></div>
+        <div class="corporate-partner-items"><img src="suguna.png"></div>
+    </div>
+    <br>
+    <br>
+    
+    <!--Hot Deals-->
+    <div class="hot-deals-heading">
+        <h1>Our hot deals <i class="fa-solid fa-fire" style="color: #ff0000;"></i></h1>
+        <p style="color:grey; font-size:14px;">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi.</p>
+        <p style="color:grey; font-size:14px;">Placeat possimus repellendus excepturi officiis iste omnis est natus.</p>
+    </div>
+    <div class="hot-deals">
+        <div class="hot-deals-left">
+            <div class="hot-deals-left-1 ">
+                <img src="strawberry.jpg">
+            </div>
+            <div class="hot-deals-left-2 ">
+                <img src="mango.jpg">
+            </div>
+            <div class="hot-deals-left-3 ">
+                <img src="greenapple.jpg">
+            </div>
+        </div>
+        
+        <div id="hot-deals-right">
+        </div>
+    </div>
+
+    <!--My Cart (Only for Testing Add to Cart button functionality)-->
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+    <!--Script for sliding presentation-->
+
+    <script>
+        const swiper = new Swiper('.swiper', {
+            // Optional parameters
+            autoplay:{
+                delay:3000,
+                disableOnInteraction:false,
+            },
+            loop: true,
+
+            // If we need pagination
+            pagination: {
+                el: '.swiper-pagination',
+            },
+
+            // Navigation arrows
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            });
+            /*const dishes = [
+                "Matar Paneer",
+                "Vegetable Manchurian",
+                "Aloo Paratha",
+                "Onion Rings",
+                "Buttered Corn",
+                "Tomato Curry",
+                "Mint Chutney",
+                "Chocolate Cake",
+                "Butter Cashew Biscuits",
+                "Bread Pakora",
+                "Tomato Soup",
+                "Curd Rice",
+                "Coriander Chutney",
+                "Pigeon Peas Curry (toor dal)",
+                "Rajma",
+                "Coconut Chutney",
+                "Paneer Tikka",
+                "Potato Samosa",
+                "Cumin Rice",
+                "Pav Bhaji",
+                "Masala Chai",
+                "Mint Lemonade",
+                "Potato Curry",
+                "Vegetarian Noodles",
+                "Egg Bhurji",
+                "Onion Tomato Curry",
+                "Potato Masala Dosa",
+                "Cardamom Tea",
+                "Sandwich",
+                "French Fries",
+                "Chickpea Salad",
+                "Paneer Bhurji",
+                "Sambar",
+                "Sugar Cookies",
+                "Paneer Pakoda",
+                "Mint Paratha",
+                "Lemon Pickle",
+                "Capsicum Curry",
+                "Cauliflower Pakoras",
+                "Vegetable Biryani",
+                "Garlic Bread",
+                "Paneer Butter Masala",
+                "Potato and Capsicum Stir-Fry",
+                "Chole Bhature",
+                "Rice Pudding (Kheer)",
+                "Coffee",
+                ];*/
+
+                const dishes = [];
+                const requestInterval = 20000; // 20 seconds
+
+                async function processDishes() {
+                for (const dish of dishes) {
+                    try {
+                    const response = await fetch('/api/searchAI', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ dish }),
+                    });
+
+                    if (response.status === 200) {
+                        // Handle success if needed
+                    } else {
+                        console.error(`Error for ${dish}: ${response.statusText}`);
+                    }
+                    } catch (error) {
+                    console.error(`Error for ${dish}: ${error.message}`);
+                    }
+
+                    await delay(requestInterval); // Wait for 20 seconds before the next request
+                }
+                }
+
+                async function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+                }
+
+                // Call the function to start the process
+                processDishes();
+
+    </script>
+    <%- include('logic'); -%>
+    
+</body>
+</html>

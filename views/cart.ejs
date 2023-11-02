@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+      header {
+        padding-top: 22px;
+        padding-bottom: 22px;
+        background-color: #147c53;
+        color: white;
+        font-size: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      header p {
+        margin-left: 22px;
+      }
+
+      ul {
+        list-style-type: none;
+        margin: 20px;
+        padding: 0;
+      }
+
+      li {
+        display: flex;
+        flex-direction: column; /* Display quantity and totalPrice below each other */
+        align-items: flex-start; /* Align content to the left */
+        padding: 10px 20px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative; /* Position for delete button */
+      }
+
+      .delete-button {
+        background-color: #ff3333;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .bill {
+        background-color: #f5f5f5;
+        padding: 20px;
+        margin: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      /* Styling for the billing section */
+      .bill p {
+        margin: 10px 0;
+        font-size: 18px;
+      }
+
+      .bill p.total {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      /* Button styling */
+      button {
+        cursor: pointer;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .add-to-cart-btn {
+        background-color: #147c53;
+        color: white;
+      }
+
+      /* Styling for the "Checkout" button */
+      .checkout-btn {
+        background-color: #147c53;
+        color: white;
+        font-size: 18px;
+        padding: 10px 30px;
+        border-radius: 5px;
+        margin-top: 20px;
+        cursor: pointer;
+        border: none;
+      }
+      /* Style the checkout form */
+.checkout-form {
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-form h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-size: 18px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+    </style>
+</head>
+
+<body>
+  <header>
+      <p>Farm Flavor</p>
+      <a href="#" style="text-decoration: none; color: white;">Logout</a>
+  </header>
+    
+  <ul>
+      <% cartItems.forEach((item, itemIndex) => { %>
+        <li data-id="<%- item._id %>">
+          <span><%- item.name %></span>
+          <!-- Display the quantity and totalPrice below each other -->
+          <span>Quantity: <%- item.quantity %></span>
+          <span>Total Price: $<%- item.totalPrice.toFixed(2) %></span>
+          <button class="delete-button" onclick="deleteItem('<%- item._id %>')">Remove from Cart</button>
+        </li>
+      <% }); %>
+  </ul>
+  <% if (cartItems.length > 0) { %>
+  <div class="checkout-form">
+    <h2>Checkout</h2>
+    <form id="checkout-form">
+      <label for="address">Delivery Address:</label>
+      <input type="text" id="address" name="address" required>
+      <label for="paymentMethod">Payment Method:</label>
+      <select id="paymentMethod" name="paymentMethod" required>
+        <option value="Cash on Delivery">Cash on Delivery</option>
+        <option value="MyWallet">MyWallet</option>
+      </select>
+      
+    </form>
+  </div>
+      <!-- Billing Section -->
+  <div class="bill">
+    <!-- Calculate the subtotal -->
+    <% let subtotal = 0; %>
+    <% cartItems.forEach(item => { %>
+      <% subtotal += parseFloat(item.totalPrice); %>
+    <% }); %>
+
+    <!-- Display the subtotal -->
+    <p>Subtotal: $<%- subtotal.toFixed(2) %></p>
+    
+    <!-- Calculate the GST and add it to the subtotal -->
+    <% const gst = (subtotal * 0.05).toFixed(2); %>
+    <p>GST (5%): $<%- gst %></p>
+    
+    <!-- Add delivery charges -->
+    <p>Delivery Charges: $80.00</p>
+    
+    <!-- Calculate and display the total -->
+    <% const total = (subtotal + parseFloat(gst) + 80).toFixed(2); %>
+    <p class="total">Total: $<%- total %></p>
+
+    
+    <!-- Checkout button -->
+    <button class="checkout-btn" onclick="checkout()">Checkout</a>
+  </div>
+
+  <script>
+      function checkout() {
+        const userId = 'yourUserId'; // Replace with the actual user ID. This should be retrieved from the server-side.
+        const address = document.getElementById('address').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        fetch('/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId ,address,paymentMethod}),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Checkout successful!'); // You can customize this message
+              location.reload(); // Refresh the page or navigate to a confirmation page
+            } else {
+              alert('Checkout failed. Please try again.'); // You can customize this message
+            }
+          })
+          .catch(error => {
+            console.error('Error during checkout:', error);
+            alert('An error occurred during checkout. Please try again.'); // You can customize this message
+          });
+      }
+    function deleteItem(itemId) {
+      const userId = 'yourUserId'; // Replace with the actual user ID.This will happn at req.user
+  
+      fetch(`/remove-from-cart/${userId}/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.message);
+          // Remove the deleted item from the DOM
+          const listItem = document.querySelector(`li[data-id="${itemId}"]`);
+          if (listItem) {
+            listItem.remove();
+            location.reload();
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting item:', error);
+        });
+    }
+  </script>
+  <% } %>
+
+</body>
+</html>

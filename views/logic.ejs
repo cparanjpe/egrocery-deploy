@@ -1,0 +1,177 @@
+<script>
+
+const exotic = [
+    {
+        "image":"/acai.png",
+        "title":"Acai",
+        
+        "price":"400"
+        
+    },
+    {
+        "image":"/avacado.png",
+        "title":"Avacado",
+        "price":"400"
+    },
+    {
+        "image":"/dragonfruit.png",
+        "title":"Dragon fruit",
+        "price":"400"
+    },
+    {
+        "image":"/durian.png",
+        "title":"Durian",
+        "price":"400"
+    },
+    {
+        "image":"/eggfruit.png",
+        "title":"Egg Fruit",
+        "price":"400"
+    },
+    {
+        "image":"/kiwano.png",
+        "title":"Kiwano",
+        "price":"400"
+    },
+    {
+        "image":"/matcha.png",
+        "title":"Matcha",
+        "price":"400"
+    },
+    {
+        "image":"/passionfruit.png",
+        "title":"Passion Fruit",
+        "price":"400"
+    },
+    {
+        "image":"/persimmon.png",
+        "title":"Persimmon",
+        "price":"400"
+    },
+    {
+        "image":"/starfruit.png",
+        "title":"Starfruit",
+        "price":"400"
+    },
+    {
+        "image":"/redbanana.png",
+        "title":"Red Banana",
+        "price":"400"
+    },
+    {
+        "image":"/tamarillo.png",
+        "title":"Tamarillo",
+        "price":"400"
+    }
+    
+
+];
+let outputa="";
+for(let i=0;i<exotic.length;i++){
+    outputa += `
+        <div class="exotic-fruits-content">
+            <img src="${exotic[i].image}">
+            <h3>${exotic[i].title}</h1>
+            <p><span>&#8377;</span>${exotic[i].price}</p>
+            
+        </div>
+    `;
+}
+document.getElementById("exotic-fruits").innerHTML = outputa;
+const cartItems = JSON.parse('<%- JSON.stringify(cartItems) %>');
+
+function isItemInCart(itemName) {
+  return cartItems.some((cartItem) => cartItem.name === itemName);
+}
+fetch('/api/hotdeals')
+            .then(response => response.json())
+            .then(data => {
+                // Process and render the hotdeals data
+                renderHotDeals(data);
+            })
+            .catch(error => {
+                console.error('Error fetching hotdeals data:', error);
+            });
+
+        function renderHotDeals(hotdeals) {
+            const cartItemsList = document.getElementById('cartItems');
+            const totalAmountElement = document.getElementById('totalAmount');
+            let totalAmount = 0;
+
+            let outputb = "";
+            hotdeals.forEach((item, i) => {
+                const productName = item.name;
+
+                outputb += `
+                    <div class="hot-deals-right-items">
+                        <div class="hot-deals-right-items-left"><img src="${item.image}" /></div>
+                        <div class="hot-deals-right-items-right">
+                            <p style="padding-top:15px;font-style:italic;font-size:14px;color:grey;">${item.name}</p>
+                            <h4 style="padding-top:15px;"><span>&#8377;</span>${item.price}</h4>
+                            <strike style="text-decoration:line-through; color:grey"><span>&#8377;</span>${item.priceog}</strike>
+                            <!-- Add an input box for quantity -->
+                            <input type="number" id="quantityInput_${i}" min="1" step="1" aria-label="Quantity" pattern="[0-9]+" placeholder="Quantity" oninput="validity.valid||(value='');"/>
+                            <button class="add-to-cart-btn" data-product="${item.name}" data-price="${item.price}" data-index="${i}">Add to Cart</button>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById("hot-deals-right").innerHTML = outputb;
+
+            // Add event listeners to the "Add to Cart" buttons
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', async () => {
+                    try{
+                        const item = button.getAttribute('data-product');
+                        const price = parseFloat(button.getAttribute('data-price'));
+
+                        // Get the index and quantity input element
+                        const index = button.getAttribute('data-index');
+                        const quantityInput = document.getElementById(`quantityInput_${index}`);
+
+                        // Capture the quantity and calculate total price
+                        const quantity = parseInt(quantityInput.value, 10);
+                        const totalPrice = price * quantity;
+                        const prodresponse = await fetch(`/api/nameProducts?name=${item}`);
+                        const products = await prodresponse.json();
+                        
+
+                        if (!products) {
+                            throw new Error(`Product not found: ${itemName}`);
+                        }
+                        const product = products[0];
+                        console.log(product.stock);
+                        if(product.stock >= quantity){
+                            fetch('/add-to-cart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ item, quantity, totalPrice }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message === 'Item added to cart successfully') {
+                                console.log('Item added to cart successfully');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error adding item to cart:', error);
+                        });
+                        }
+                        else{
+                            alert('Not enough stock for the item')
+                        }
+                        
+                        
+                    }
+                    catch(error){
+                        alert('Error adding item to the cart');
+                    }
+
+                });
+            });
+        }
+
+</script>

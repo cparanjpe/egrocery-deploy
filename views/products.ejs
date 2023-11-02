@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Grocery Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .header-content {
+            margin-left: 18px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        /* Left Menu */
+        .menu {
+            flex: 1;
+            padding: 20px;
+            background-color: #147c53;
+            color: #fff;
+            border-radius: 10px;
+            max-height: 250px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 10px;
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu li {
+            margin-bottom: 10px;
+        }
+
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .menu a:hover {
+            color: #0f6d47;
+        }
+
+        .products {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product-container {
+            flex: 1;
+            min-width: 200px;
+            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            border-radius: 20px;
+            height: auto;
+            position: relative; /* Add this for positioning the "out of stock" indicator */
+        }
+
+        .product-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-container img {
+            max-width: 100%;
+            height: 170px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .product-container h3 {
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .product-container p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #555555;
+        }
+
+        .product-container input[type="number"] {
+            width: 40px;
+        }
+
+        .product-container button {
+            background-color: #147c53;
+            color: #fff;
+            margin-left: 23px;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .product-container button:hover {
+            background-color: #0f6d47;
+        }
+
+        /* Add the styles for the out-of-stock indicator */
+        .out-of-stock {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+
+        /* Style for product-container when out of stock */
+        .product-container.out-of-stock {
+            border-color: #ff0000;
+            box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
+        }
+        .product-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            max-width: 600px;
+        }
+
+        .popup-image {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .popup-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .popup-description {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .popup-description h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .popup-description p {
+            font-size: 1rem;
+            color: #555555;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        #search-input{
+            width:30%;
+            margin-left:200px;
+        }
+        .search-button{
+            margin-left:10px;
+            margin-top:-2px;
+        }
+        .price-filter {
+            flex: 1;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-filter h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #555;
+            padding-bottom: 10px;
+        }
+
+        .price-filter label {
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        .price-filter input {
+            width: 60px;
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .price-filter button {
+            background-color: #147c53;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .price-filter button:hover {
+            background-color: #0f6d47;
+        }
+
+        .small-toast {
+        font-size: 7px; /* Adjust the font size as needed */
+        /* padding: 1px; Adjust the padding as needed */
+        width: 10%; /* Set the width to 100% to make it a strip */
+        }
+        
+
+
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <h1>Farm Flavor</h1>
+        <p>From Farm to Fork</p>
+
+    </div>
+    <input type="text" id="search-input" placeholder="Search for a product">
+    <button class="search-button" onclick="searchProduct()">Search</button>
+</header>
+<div class="container">
+    <!-- Left Menu -->
+    <aside class="menu sticky-menu">
+        <h2>Categories</h2>
+        <ul>
+            <li><a href="#" data-category="fruits" onclick="showCategory('fruits')">Fruits</a></li>
+            <li><a href="#" data-category="vegetables" onclick="showCategory('vegetables')">Vegetables</a></li>
+            <li><a href="#" data-category="bread" onclick="showCategory('bread')">Bread</a></li>
+            <li><a href="#" data-category="cereals" onclick="showCategory('cereals')">Cereals</a></li>
+            <li><a href="#" data-category="pulses" onclick="showCategory('pulses')">Pulses</a></li>
+            <li><a href="#" data-category="value-added" onclick="showCategory('value-added')">Value-Added</a></li>
+        </ul>
+        
+        <!-- Price Filter Container -->
+        <div class="price-filter-container">
+            <h2>Price Range</h2>
+            <label for="price-min">Min Price:</label>
+            <input type="number" id="price-min" min="0">
+
+            <label for="price-max">Max Price:</label>
+            <input type="number" id="price-max" min="0">
+            <button onclick="applyPriceFilter()">Apply</button>
+        </div>
+            
+    </aside>
+
+    <!-- Right Product Listings -->
+    <section class="products" id="product-list">
+        <!-- Product listings will be dynamically generated here -->
+    </section>
+</div>
+<div class="product-popup" id="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closePopup()">&times;</span>
+        <div class="popup-image" id="popup-image">
+            
+        </div>
+        <div class="popup-description" id="popup-description">
+            <h2>Product Name</h2>
+            <p>Product Description</p>    
+            
+            
+        </div>
+        <div class="close-popup-button">
+            <span class="close-button" onclick="closePopup()">&times;</span>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for dynamic product loading -->
+<script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+        // Function to apply price filtering
+    // Function to apply price filtering
+    const categoryLinks = document.querySelectorAll('.menu a');
+    categoryLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            selectCategory(link);
+        });
+    });
+
+    // Function to select a category
+    function selectCategory(selectedLink) {
+        // Remove 'selected' class from all category links
+        categoryLinks.forEach((link) => {
+            link.classList.remove('selected');
+        });
+
+        // Add 'selected' class to the clicked category link
+        selectedLink.classList.add('selected');
+
+        // Get the selected category and apply price filter
+        const selectedCategory = selectedLink.getAttribute('data-category');
+        applyPriceFilter();
+    }
+    selectCategory(document.querySelector('.menu a[data-category="fruits"]'));
+
+    function applyPriceFilter() {
+        const minPrice = parseFloat(document.getElementById('price-min').value) || 0;
+        const maxPrice = parseFloat(document.getElementById('price-max').value) || 100;
+        const selectedCategory = getSelectedCategory();
+        
+
+        // Fetch and render products based on price range and category
+        fetchProductsByPriceAndCategory(minPrice, maxPrice, selectedCategory);
+    }
+
+    function getSelectedCategory() {
+        const categoryLinks = document.querySelectorAll('.menu a');
+        for (const link of categoryLinks) {
+            if (link.classList.contains('selected')) {
+                return link.getAttribute('data-category'); // Assuming you set a data-category attribute on the category links
+            }
+        }
+        return null; // Return null if no category is selected
+    }
+
+
+    // Function to fetch and render products based on price range
+    async function fetchProductsByPriceAndCategory(minPrice, maxPrice,category) {
+        try {
+            // Fetch products from the server based on the price range
+            const response = await fetch(`/api/products?minPrice=${minPrice}&maxPrice=${maxPrice}&category=${category}`);
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch products');
+            }
+
+            const products = await response.json();
+
+            // Check if products is an array (JSON data)
+            if (Array.isArray(products)) {
+                renderProducts(products);
+            } else {
+                throw new Error('Invalid response data. Expected JSON array.');
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+            // Handle the error here (e.g., show an error message to the user)
+        }
+    }
+
+    // Function to render products based on data from the server
+    async function searchProduct() {
+        const searchInput = document.getElementById('search-input').value;
+
+        try {
+            // Fetch the product details based on the search input
+            const response = await fetch(`/api/nameProducts?name=${searchInput}`);
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch product details');
+            }
+
+            const products = await response.json();
+
+            // Check if products is an array (JSON data)
+            if (Array.isArray(products) && products.length > 0) {
+                renderProducts(products);
+            } else {
+                // If no matching products are found, display a message to the user
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = '<p>No matching products found</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+            // Handle the error here (e.g., show an error message to the user)
+        }
+    }
+    function renderProducts(products) {
+        const productList = document.getElementById('product-list');
+        productList.innerHTML = ''; // Clear existing product listings
+
+        products.forEach(product => {
+            const productContainer = document.createElement('div');
+            productContainer.classList.add('product-container');
+
+            const productImage = document.createElement('img');
+            productImage.src = product.image; // Assuming your product schema has an 'image' field
+
+            const productName = document.createElement('h3');
+            productName.textContent = product.name;
+
+            const productPrice = document.createElement('p');
+            productPrice.textContent = `$${product.price.toFixed(2)}`;
+
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.min = 1;
+            quantityInput.value = 1;
+            quantityInput.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
+
+            const addToCartButton = document.createElement('button');
+            addToCartButton.textContent = 'Add to Cart';
+            addToCartButton.addEventListener('click', () => {
+                event.stopPropagation();
+
+                const itemName = product.name;
+                const quantity = parseInt(quantityInput.value);
+                const totalPrice = product.price * quantity;
+                addToCart(itemName, quantity, totalPrice);
+            });
+            const moreButton = document.createElement('button');
+            moreButton.textContent = 'More';
+            moreButton.addEventListener('click', () => {
+                openPopup(product);
+            });
+
+            productContainer.appendChild(productImage);
+            productContainer.appendChild(productName);
+            productContainer.appendChild(productPrice);
+            productContainer.appendChild(quantityInput);
+            productContainer.appendChild(addToCartButton);
+            productContainer.appendChild(moreButton);
+
+            // Check if the product is out of stock and apply styles
+            if (product.stock === 0) {
+                // Create and append the "out of stock" indicator
+                const outOfStockIndicator = document.createElement('div');
+                outOfStockIndicator.classList.add('out-of-stock');
+                outOfStockIndicator.textContent = 'Out of Stock';
+                productContainer.appendChild(outOfStockIndicator);
+
+                // Add a class to apply specific styling for out-of-stock products
+                productContainer.classList.add('out-of-stock-container');
+            }
+
+
+            productList.appendChild(productContainer);
+            productContainer.addEventListener('click', () => {
+                openPopup(product);
+            });
+        });
+    }
+
+    // Function to make an AJAX request to add an item to the cart
+    async function addToCart(itemName, quantity, totalPrice) {
+        try {
+            // Fetch the product details for the selected item
+            const prodresponse = await fetch(`/api/nameProducts?name=${itemName}`);
+            const products = await prodresponse.json();
+
+            if (!products) {
+                throw new Error(`Product not found: ${itemName}`);
+            }
+
+            const product = products[0];
+            console.log(product.stock);
+            if(isNaN(quantity) || quantity < 0){
+                alert('Cannot enter empty or negative values');
+            }
+            else{
+                
+            
+                // Check if the product has sufficient stock
+                if (product.stock >= quantity) {
+                    // Make an HTTP POST request to add the item to the cart
+                    const response = await fetch('/add-to-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            // Include the user ID in the request
+                            item: itemName,
+                            quantity,
+                            totalPrice,
+                        }),
+                    });
+
+                    if (response.ok) {
+                        // alert('Item added to cart successfully');
+                        Swal.fire({
+                            title: 'Item added to cart successfully',
+                            // text: 'Item added to cart successfully',
+                            icon: 'success',
+                            position: 'top-end', // Adjust the position as needed
+                            showConfirmButton: false,
+                            timer: 1500, // Display time for the notification (in milliseconds)
+                            customClass: 'small-toast', // Apply your custom CSS class
+                            });
+                    } else {
+                        alert('Failed to add item to cart');
+                    }
+                } else {
+                    alert('Insufficient stock for this item');
+                }
+            }   
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
+            alert('Error adding item to cart');
+        }
+    }
+    
+
+    // Function to fetch and render products based on the selected category
+    async function showCategory(category) {
+        try {
+            // Fetch products from the server based on the selected category
+            const response = await fetch(`/api/products?category=${category}`);
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch products for category: ${category}`);
+            }
+
+            const products = await response.json();
+
+            // Check if products is an array (JSON data)
+            if (Array.isArray(products)) {
+                renderProducts(products);
+            } else {
+                throw new Error('Invalid response data. Expected JSON array.');
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+            // Handle the error here (e.g., show an error message to the user)
+        }
+    }
+    function openPopup(product) {
+        const popup = document.getElementById('popup');
+        const popupImage = document.getElementById('popup-image');
+        const popupDescription = document.getElementById('popup-description');
+
+        // Set the product image
+        popupImage.innerHTML = `<img src="${product.image}" alt="${product.name}" />`;
+
+        // Set the product description
+        popupDescription.innerHTML = `
+            <h2>${product.name}</h2>
+            <p>${product.description}</p>
+        `;
+
+        popup.style.display = 'flex'; // Display the pop-up
+    }
+
+    // Function to close the pop-up
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        popup.style.display = 'none';
+    }
+
+    // You may want to call the renderProducts function when the page loads
+    window.onload = async () => {
+        // By default, show products in the 'fruits' category
+        showCategory('fruits');
+    };
+</script>
+</body>
+</html>

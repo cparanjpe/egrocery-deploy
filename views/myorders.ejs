@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set fonts */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #147c53;
+            color: white;
+            font-size: 24px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header a {
+            text-decoration: none;
+            color: white;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Order item styles */
+        .order-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            position: relative; /* For positioning status */
+        }
+
+        .order-item p {
+            margin-bottom: 10px;
+        }
+
+        .order-item h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Order details styles */
+        .order-details {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .order-info {
+            flex: 1;
+            padding-left: 20px;
+        }
+
+        /* Status color styles */
+        .order-status {
+            position: absolute;
+            top: 10px; /* Adjust as needed */
+            right: 10px; /* Adjust as needed */
+            font-weight: bold;
+            color: #147c53; /* Default status color (Processing) */
+        }
+
+        .order-status.Shipped {
+            color: #0073e6; /* Blue color for Shipped status */
+        }
+
+        .order-status.Delivered {
+            color: #888; /* Gray color for Delivered status */
+        }
+
+        /* Button styles */
+        .cancel-button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .remove-button{
+            background-color: rgb(156, 154, 154);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .cancel-button:hover {
+            background-color: #c0392b;
+        }
+        
+
+        /* Additional styles as needed */
+
+        /* Center align text */
+        .text-center {
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #147c53;
+        }
+
+        #info {
+            color: #f1ecec;
+            font-size: 18px;
+        }
+        .remove-button{
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <p>Farm Flavor</p>
+        <p>My Orders</p>
+    </header>
+
+    <div class="container">
+        
+
+        <% if (orders.length === 0) { %>
+            <p class="no-orders">You haven't placed any orders yet.</p>
+        <% } else { %>
+            <% orders.forEach((order) => { %>
+                <div class="order-item">
+                    <div class="order-status <%= order.status %>">
+                        <p><%= order.status %></p>
+                    </div>
+                
+                    <h3>Order ID: <%= order._id %></h3>
+                    <p>Order Date : <%= order.date %></p>
+                    <p>Items Ordered:</p>
+                    <ul>
+                        <% order.itemsOrdered.forEach((item) => { %>
+                            <li>
+                                <%= item.name %> (Quantity: <%= item.quantity %>)
+                            </li>
+                        <% }); %>
+                    </ul>
+                    <p>Total Price: $<%= order.totalPrice.toFixed(2) %></p>
+                    <p>Delivery Address: <%= order.address %></p>
+                    <p>Payment Mode: <%= order.paymentMethod %></p>
+                    <% if (order.status === 'Delivered') { %>
+                        <!-- Display "cancel Order" button -->
+                        <a href="#" class="remove-button" onclick="cancelOrder('<%= order._id %>')">Remove Order</a>
+
+                    <%}
+                    else{%>
+                        <!-- Display "remove Order" button -->
+                        
+                        <a href="#" class="cancel-button" onclick="cancelOrder('<%= order._id %>')">Cancel Order</a>
+                    <% } %>
+                
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <script>
+        
+        function cancelOrder(orderId) {
+            // Send a request to your server to cancel the order by orderId
+            fetch(`/cancel-order/${orderId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Order successfully canceled, remove the order from the UI
+                    const orderItem = document.querySelector(`.order-item[data-id="${orderId}"]`);
+                    if (orderItem) {
+                        orderItem.remove();
+                    }
+                } else {
+                    // Handle cancel order failure (e.g., show an error message)
+                    console.error('Cancel order failed:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error canceling order:', error);
+            });
+        }
+    </script>
+</body>
+</html>

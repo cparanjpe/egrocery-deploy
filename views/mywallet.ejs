@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set fonts and background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #147c53;
+            color: white;
+            font-size: 24px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header a {
+            text-decoration: none;
+            color: white;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Wallet section */
+        .wallet-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .wallet-balance {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Money actions */
+        .money-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .money-actions input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .add-money-button,
+        .withdraw-money-button {
+            background-color: #147c53;
+            color: white;
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .add-money-button:hover,
+        .withdraw-money-button:hover {
+            background-color: #0d5638;
+        }
+        #info{
+          font-size: 15px;
+          
+        }
+    </style>
+    <title>My Wallet</title>
+</head>
+<body>
+    <header>
+        <p>Farm Flavor</p>
+        <p id="info">&copy; Farm Flavor</p>
+    </header>
+
+    <div class="container">
+        <h2>My Wallet</h2>
+        <div class="wallet-section">
+            <!-- Display the user's current wallet balance -->
+            <p class="wallet-balance">$<span id="walletBalance"><%= walletBalance.toFixed(2) %></span></p>
+        </div>
+
+        <!-- Money actions: Add Money -->
+        <div class="money-actions">
+            <!-- Add an input field for entering the amount to add -->
+            <input type="number" id="amountToAdd" placeholder="Enter amount">
+            
+            <!-- Add Money button -->
+            <button id="addMoneyButton" class="add-money-button">Add Money</button>
+        </div>
+
+        <!-- Money actions: Withdraw Money -->
+        <div class="money-actions">
+            <!-- Add an input field for entering the amount to withdraw -->
+            <input type="number" id="amountToWithdraw" placeholder="Enter amount to withdraw">
+            
+            <!-- Withdraw Money button -->
+            <button id="withdrawMoneyButton" class="withdraw-money-button">Withdraw Money</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const addMoneyButton = document.getElementById('addMoneyButton');
+          const amountToAddInput = document.getElementById('amountToAdd');
+          const walletBalanceSpan = document.getElementById('walletBalance');
+          const withdrawMoneyButton = document.getElementById('withdrawMoneyButton');
+          const amountToWithdrawInput = document.getElementById('amountToWithdraw');
+        
+          addMoneyButton.addEventListener('click', async () => {
+            const amount = amountToAddInput.value;
+        
+            // Validate the amount
+            if (isNaN(amount) || amount <= 0) {
+              alert('Invalid amount');
+              return;
+            }
+        
+            // Make an AJAX request to add money to the wallet
+            try {
+              const response = await fetch('/add-money-to-wallet', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount }),
+              });
+        
+              const data = await response.json();
+        
+              if (data.success) {
+                // Update the displayed wallet balance
+                walletBalanceSpan.textContent = (parseFloat(walletBalanceSpan.textContent) + parseFloat(amount)).toFixed(2);
+                alert(data.message);
+              } else {
+                alert(data.error);
+              }
+            } catch (error) {
+              console.error('Error adding money to wallet:', error);
+              alert('An error occurred. Please try again.');
+            }
+          });
+          
+          withdrawMoneyButton.addEventListener('click', async () => {
+            const amountToWithdraw = amountToWithdrawInput.value;
+        
+            // Validate the withdrawal amount
+            if (isNaN(amountToWithdraw) || amountToWithdraw <= 0) {
+              alert('Invalid withdrawal amount');
+              return;
+            }
+        
+            // Ensure the user doesn't withdraw more than the wallet balance
+            const currentBalance = parseFloat(walletBalanceSpan.textContent);
+            if (parseFloat(amountToWithdraw) > currentBalance) {
+              alert('Insufficient balance for withdrawal');
+              return;
+            }
+        
+            // Make an AJAX request to withdraw money from the wallet
+            try {
+              const response = await fetch('/withdraw-money-from-wallet', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: amountToWithdraw }),
+              });
+        
+              const data = await response.json();
+        
+              if (data.success) {
+                // Update the displayed wallet balance
+                walletBalanceSpan.textContent = (currentBalance - parseFloat(amountToWithdraw)).toFixed(2);
+                alert(data.message);
+              } else {
+                alert(data.error);
+              }
+            } catch (error) {
+              console.error('Error withdrawing money from wallet:', error);
+              alert('An error occurred. Please try again.');
+            }
+          });
+        });
+    </script>
+</body>
+</html>
