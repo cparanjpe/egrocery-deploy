@@ -655,40 +655,24 @@
                 "Rice Pudding (Kheer)",
                 "Coffee",
                 ];*/
-
-                const dishes = [];
-                const requestInterval = 20000; // 20 seconds
-
-                async function processDishes() {
-                for (const dish of dishes) {
-                    try {
-                    const response = await fetch('/api/searchAI', {
-                        method: 'POST',
-                        headers: {
-                        'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ dish }),
-                    });
-
-                    if (response.status === 200) {
-                        // Handle success if needed
-                    } else {
-                        console.error(`Error for ${dish}: ${response.statusText}`);
-                    }
-                    } catch (error) {
-                    console.error(`Error for ${dish}: ${error.message}`);
-                    }
-
-                    await delay(requestInterval); // Wait for 20 seconds before the next request
+                async function handleAiClick(){
+                const search = document.getElementById('searchQueryInput').value;
+                if(search==""){
+                    alert("Enter a Dish Name to Search");
+                    return;
                 }
-                }
-
-                async function delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-                }
-
-                // Call the function to start the process
-                processDishes();
+                // alert(search);
+                const response = await fetch('/api/searchAI', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({dish:search }),
+              });
+        
+                // const response = await fetch(`/api/searchAI` );
+            }
+                
 
     </script>
     <%- include('logic'); -%>
