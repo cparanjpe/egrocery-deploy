@@ -72,7 +72,7 @@ for(let i=0;i<exotic.length;i++){
         <div class="exotic-fruits-content">
             <img src="${exotic[i].image}">
             <h3>${exotic[i].title}</h1>
-            <p><span>&#8377;</span>${exotic[i].price}</p>
+            <p><span>$</span>2.97</p>
             
         </div>
     `;
@@ -107,8 +107,8 @@ fetch('/api/hotdeals')
                         <div class="hot-deals-right-items-left"><img src="${item.image}" /></div>
                         <div class="hot-deals-right-items-right">
                             <p style="padding-top:15px;font-style:italic;font-size:14px;color:grey;">${item.name}</p>
-                            <h4 style="padding-top:15px;"><span>&#8377;</span>${item.price}</h4>
-                            <strike style="text-decoration:line-through; color:grey"><span>&#8377;</span>${item.priceog}</strike>
+                            <h4 style="padding-top:15px;"><span>$</span>${item.price}</h4>
+                            <strike style="text-decoration:line-through; color:grey"><span>$</span>3.00</strike>
                             <!-- Add an input box for quantity -->
                             <input type="number" id="quantityInput_${i}" min="1" step="1" aria-label="Quantity" pattern="[0-9]+" placeholder="Quantity" oninput="validity.valid||(value='');"/>
                             <button class="add-to-cart-btn" data-product="${item.name}" data-price="${item.price}" data-index="${i}">Add to Cart</button>
@@ -143,25 +143,36 @@ fetch('/api/hotdeals')
                         const product = products[0];
                         console.log(product.stock);
                         if(product.stock >= quantity){
-                            fetch('/add-to-cart', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ item, quantity, totalPrice }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.message === 'Item added to cart successfully') {
-                                console.log('Item added to cart successfully');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error adding item to cart:', error);
-                        });
+                                fetch('/add-to-cart', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ item, quantity, totalPrice }),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.message === 'Item added to cart successfully') {
+                                    Swal.fire({
+                                        title: 'Item added to cart successfully',
+                                        // text: 'Item added to cart successfully',
+                                        icon: 'success',
+                                        position: 'top-end', // Adjust the position as needed
+                                        showConfirmButton: false,
+                                        timer: 1500, // Display time for the notification (in milliseconds)
+                                        customClass: 'small-toast', // Apply your custom CSS class
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error adding item to cart:', error);
+                            });
+                        }
+                        else if(product.stock < quantity){
+                            alert("Not enough items for the stock");
                         }
                         else{
-                            alert('Not enough stock for the item')
+                            alert("Please enter some value");
                         }
                         
                         
