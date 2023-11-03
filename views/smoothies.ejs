@@ -379,7 +379,11 @@
         .add-to-cart-btn:hover {
             background-color: #0f6d47; /* Darker blue on hover */
         }
-        
+        .small-toast {
+        font-size: 7px; /* Adjust the font size as needed */
+        /* padding: 1px; Adjust the padding as needed */
+        width: 10%; /* Set the width to 100% to make it a strip */
+        }
 
 
     </style>
@@ -586,6 +590,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <!--Script for sliding presentation-->
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         const swiper = new Swiper('.swiper', {
@@ -607,55 +612,9 @@
                 prevEl: '.swiper-button-prev',
             },
             });
-            /*const dishes = [
-                "Matar Paneer",
-                "Vegetable Manchurian",
-                "Aloo Paratha",
-                "Onion Rings",
-                "Buttered Corn",
-                "Tomato Curry",
-                "Mint Chutney",
-                "Chocolate Cake",
-                "Butter Cashew Biscuits",
-                "Bread Pakora",
-                "Tomato Soup",
-                "Curd Rice",
-                "Coriander Chutney",
-                "Pigeon Peas Curry (toor dal)",
-                "Rajma",
-                "Coconut Chutney",
-                "Paneer Tikka",
-                "Potato Samosa",
-                "Cumin Rice",
-                "Pav Bhaji",
-                "Masala Chai",
-                "Mint Lemonade",
-                "Potato Curry",
-                "Vegetarian Noodles",
-                "Egg Bhurji",
-                "Onion Tomato Curry",
-                "Potato Masala Dosa",
-                "Cardamom Tea",
-                "Sandwich",
-                "French Fries",
-                "Chickpea Salad",
-                "Paneer Bhurji",
-                "Sambar",
-                "Sugar Cookies",
-                "Paneer Pakoda",
-                "Mint Paratha",
-                "Lemon Pickle",
-                "Capsicum Curry",
-                "Cauliflower Pakoras",
-                "Vegetable Biryani",
-                "Garlic Bread",
-                "Paneer Butter Masala",
-                "Potato and Capsicum Stir-Fry",
-                "Chole Bhature",
-                "Rice Pudding (Kheer)",
-                "Coffee",
-                ];*/
-                async function handleAiClick(){
+
+
+            async function handleAiClick(){
                 const search = document.getElementById('searchQueryInput').value;
                 if(search==""){
                     alert("Enter a Dish Name to Search");
@@ -665,14 +624,26 @@
                 const response = await fetch('/api/searchAI', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({dish:search }),
-              });
-        
-                // const response = await fetch(`/api/searchAI` );
+                });
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Item added to cart successfully',
+                        // text: 'Item added to cart successfully',
+                        icon: 'success',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    });
+                } else {
+                    alert("Failed to add items to the cart. Please try again!");
+                }
             }
-                
+            
+
 
     </script>
     <%- include('logic'); -%>
