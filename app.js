@@ -277,7 +277,10 @@ app.get('/api/hotdeals', requireAuth, async (req, res) => {
 app.post('/checkout', requireAuth, async (req, res) => {
   try {
     const userId = req.user;
-
+    const address = req.body.address;
+    if (!req.body.address || req.body.address.trim() === '') {
+      return res.status(400).json({ success: false, error: 'Address is required for checkout' });
+    }
     // Fetch the user's cart items
     const cartItems = await Cart.find({ id: userId });
 
@@ -299,7 +302,7 @@ app.post('/checkout', requireAuth, async (req, res) => {
 
     // Calculate GST (5%) and delivery charges
     const gst = 0.05 * subtotal;
-    const deliveryCharges = 80;
+    const deliveryCharges = 1;
 
     // Calculate the final total price including GST and delivery charges
     const totalPrice = subtotal + gst + deliveryCharges;
@@ -653,7 +656,6 @@ app.post('/api/searchAI',requireAuth,async(req,res)=>{
 
     console.log("You need : ");
     console.log(finalmatch);
-    results.push(finalmatch);
     await finalmatch.forEach(async(item)=>{
       const existingCartItem = await Cart.findOne({ id: req.user, name: item });
       const price = await Product.findOne({name:item})
@@ -686,10 +688,7 @@ app.post('/api/searchAI',requireAuth,async(req,res)=>{
     res.status(400).send('Invalid JSON response from GPT');
     
   }
-  
-
   res.status(200).send('Items added to cart');
-  console.log(results)
 }
 catch(error){
   console.error("Error:", error);
@@ -697,8 +696,5 @@ catch(error){
   
 }
 })
-
-// ... (previous code)
-
 module.exports = Product;
 app.use(authRoutes);
