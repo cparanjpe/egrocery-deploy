@@ -138,11 +138,6 @@
   border: 1px solid #ccc;
   font-size: 16px;
 }
-.small-toast {
-        font-size: 14px; /* Adjust the font size as needed */
-        padding: 1px; /*Adjust the padding as needed*/
-        width: 20%; /* Set the width to 100% to make it a strip */
-        }
 
     </style>
 </head>
@@ -194,17 +189,17 @@
     <p>GST (5%): $<%- gst %></p>
     
     <!-- Add delivery charges -->
-    <p>Delivery Charges: $80.00</p>
+    <p>Delivery Charges: $1.00</p>
     
     <!-- Calculate and display the total -->
-    <% const total = (subtotal + parseFloat(gst) + 80).toFixed(2); %>
+    <% const total = (subtotal + parseFloat(gst) + 1).toFixed(2); %>
     <p class="total">Total: $<%- total %></p>
 
     
     <!-- Checkout button -->
     <button class="checkout-btn" onclick="checkout()">Checkout</a>
   </div>
-  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
       function checkout() {
         const userId = 'yourUserId'; // Replace with the actual user ID. This should be retrieved from the server-side.
@@ -220,21 +215,10 @@
           .then(response => response.json())
           .then(data => {
             if (data.success) {
-              //alert('Checkout successful!'); // You can customize this message
-              Swal.fire({
-                            title: 'Order Placed !',
-                            // text: 'Item added to cart successfully',
-                            icon: 'success',
-                            position: 'center', // Adjust the position as needed
-                            showConfirmButton: false,
-                            timer: 1500, // Display time for the notification (in milliseconds)
-                            customClass: 'small-toast', // Apply your custom CSS class
-                            }).then((result) => {
-    if (result.dismiss === Swal.DismissReason.timer) {
-      window.location.href = '/myorders'; 
-  }});
+              alert('Checkout successful!'); // You can customize this message
+              location.reload(); // Refresh the page or navigate to a confirmation page
             } else {
-              alert('Checkout failed. Please try again.'); // You can customize this message
+              alert(data.error); // You can customize this message
             }
           })
           .catch(error => {
