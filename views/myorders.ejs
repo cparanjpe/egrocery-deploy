@@ -208,9 +208,11 @@
                     if (orderItem) {
                         orderItem.remove();
                     }
+                    alert("Order cancelled succesfully");
                 } else {
                     // Handle cancel order failure (e.g., show an error message)
                     console.error('Cancel order failed:', data.error);
+                    alert("Order once shipped cannot be canceled");
                 }
             })
             .catch(error => {
