@@ -394,6 +394,9 @@ app.delete('/cancel-order/:orderId', requireAuth, async (req, res) => {
     if (!order) {
       return res.status(404).json({ success: false, error: 'Order not found' });
     }
+    if(order.status === 'Shipped'){
+      return res.status(400).json({ success: false, error: 'Cannot cancel order that has been shipped' });
+    }
 
     // If the payment method is "Cash on Delivery" (COD), do not refund the wallet
     
