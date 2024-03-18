@@ -6,8 +6,8 @@ const cookieParser = require('cookie-parser');
 const { requireAuth } = require('./middleware/authMiddleware');
 const { OpenAI } = require('openai');
 const _ = require('lodash');
+require('dotenv').config();
 const app = express();
-
 const cartSchema = new mongoose.Schema({
   id: {
     type: String,
@@ -117,7 +117,7 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 // database connection
-const dbURI = 'mongodb+srv://tsemwal:tsemwal@cluster0.yzsyf3y.mongodb.net/test';
+const dbURI = process.env.DB_URI;
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => app.listen(3001))
   .catch((err) => console.log(err));
