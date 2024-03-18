@@ -6,11 +6,6 @@ const cookieParser = require('cookie-parser');
 const { requireAuth } = require('./middleware/authMiddleware');
 const { OpenAI } = require('openai');
 const _ = require('lodash');
-require('dotenv').config();
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_KEY,
-});
 const app = express();
 
 const cartSchema = new mongoose.Schema({
@@ -698,6 +693,13 @@ catch(error){
   res.status(500).send('Internal server error');
   
 }
+})
+app.get('/chefbot',requireAuth,async(req,res)=>{
+  try{
+    res.render('chefbot');
+  }catch(error){
+    res.status(500).json({message:'Internal server error'})
+  }
 })
 module.exports = Product;
 app.use(authRoutes);

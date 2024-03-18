@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set fonts */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #147c53;
+            color: white;
+            font-size: 24px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Tags container */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Tag styles */
+        .tag {
+            background-color: #147c53;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Form styles */
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button[type="button"],
+        button[type="submit"] {
+            background-color: #147c53;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="button"]:hover,
+        button[type="submit"]:hover {
+            background-color: #0d5c3e;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <p>Farm Flavor</p>
+        <p>Welcome to ChefBot</p>
+    </header>
+
+    <div class="container">
+        <div class="tags-container" id="tagsContainer"></div>
+
+        <form id="userInputForm">
+            <label for="item">Enter Ingredient:</label>
+            <input type="text" id="item" name="item">
+            <button type="button" id="addButton">Add</button>
+            <button type="button" id="submitButton">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const tagsContainer = document.getElementById('tagsContainer');
+        const userInputForm = document.getElementById('userInputForm');
+        const itemInput = document.getElementById('item');
+        const addButton = document.getElementById('addButton');
+        const submitButton = document.getElementById('submitButton');
+        let ingredients = [];
+
+        addButton.addEventListener('click', () => {
+            const ingredient = itemInput.value.trim();
+            if (ingredient) {
+                ingredients.push(ingredient);
+                renderTags();
+                itemInput.value = '';
+            }
+        });
+
+        function renderTags() {
+            tagsContainer.innerHTML = '';
+            ingredients.forEach((ingredient, index) => {
+                const tag = document.createElement('div');
+                tag.classList.add('tag');
+                tag.textContent = ingredient;
+                tag.addEventListener('click', () => {
+                    ingredients.splice(index, 1);
+                    renderTags();
+                });
+                tagsContainer.appendChild(tag);
+            });
+        }
+
+        submitButton.addEventListener('click', () => {
+            if (ingredients.length > 0) {
+                fetch('http://localhost:5000/recommend_recipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ingredients })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Recommended Recipe: ${data.recipe}`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+
+                // Clear ingredients array and render tags
+                ingredients = [];
+                renderTags();
+            } else {
+                alert('Please add at least one ingredient.');
+            }
+        });
+    </script>
+</body>
+</html>
