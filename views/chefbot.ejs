@@ -101,6 +101,8 @@
             <button type="button" id="addButton">Add</button>
             <button type="button" id="submitButton">Submit</button>
         </form>
+
+        <div id="recommendedRecipes"></div>
     </div>
 
     <script>
@@ -145,20 +147,44 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    alert(`Recommended Recipe: ${data.recipe}`);
+                    displayRecommendedRecipes(data.recipe);
+                    // console.log(data.recipe);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('An error occurred. Please try again.');
                 });
 
-                // Clear ingredients array and render tags
                 ingredients = [];
                 renderTags();
             } else {
                 alert('Please add at least one ingredient.');
             }
         });
+
+        function displayRecommendedRecipes(recipes) {
+            const recommendedRecipesContainer = document.getElementById('recommendedRecipes');
+            recommendedRecipesContainer.innerHTML = '';
+
+            if (recipes.length > 0) {
+                const heading = document.createElement('h3');
+                heading.textContent = 'Recommended Recipes:';
+                recommendedRecipesContainer.appendChild(heading);
+
+                const ul = document.createElement('ul');
+                for (let i = 0; i < Math.min(3, recipes.length); i++) { 
+                    const li = document.createElement('li');
+                    li.textContent = recipes[i];
+                    ul.appendChild(li);
+                }
+                recommendedRecipesContainer.appendChild(ul);
+            } else {
+                const message = document.createElement('p');
+                message.textContent = 'No recipes found.';
+                recommendedRecipesContainer.appendChild(message);
+            }
+        }
+
     </script>
 </body>
 </html>
