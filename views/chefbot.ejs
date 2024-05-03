@@ -84,7 +84,39 @@
         button[type="submit"]:hover {
             background-color: #0d5c3e;
         }
+        @keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.recipe-card {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out; /* Add animation to recipe card */
+}
+
+
+        .recipe-card h4 {
+            margin: 0;
+            color: #147c53;
+            font-size: 18px;
+        }
+
+        .recipes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 20px;
+        }
+
     </style>
+
 </head>
 <body>
     <header>
@@ -104,7 +136,7 @@
 
         <div id="recommendedRecipes"></div>
     </div>
-
+      
     <script>
         const tagsContainer = document.getElementById('tagsContainer');
         const userInputForm = document.getElementById('userInputForm');
@@ -148,7 +180,7 @@
                 .then(response => response.json())
                 .then(data => {
                     displayRecommendedRecipes(data.recipe);
-                    // console.log(data.recipe);
+                    console.log(data.recipe);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -163,27 +195,38 @@
         });
 
         function displayRecommendedRecipes(recipes) {
-            const recommendedRecipesContainer = document.getElementById('recommendedRecipes');
-            recommendedRecipesContainer.innerHTML = '';
+    const recommendedRecipesContainer = document.getElementById('recommendedRecipes');
+    recommendedRecipesContainer.innerHTML = '';
 
-            if (recipes.length > 0) {
-                const heading = document.createElement('h3');
-                heading.textContent = 'Recommended Recipes:';
-                recommendedRecipesContainer.appendChild(heading);
+    if (recipes.length > 0) {
+        const heading = document.createElement('h3');
+        heading.textContent = 'Recommended Recipes:';
+        recommendedRecipesContainer.appendChild(heading);
 
-                const ul = document.createElement('ul');
-                for (let i = 0; i < Math.min(3, recipes.length); i++) { 
-                    const li = document.createElement('li');
-                    li.textContent = recipes[i];
-                    ul.appendChild(li);
-                }
-                recommendedRecipesContainer.appendChild(ul);
-            } else {
-                const message = document.createElement('p');
-                message.textContent = 'No recipes found.';
-                recommendedRecipesContainer.appendChild(message);
-            }
+        const recipesContainer = document.createElement('div');
+        recipesContainer.classList.add('recipes-container');
+
+        for (let i = 0; i < Math.min(3, recipes.length); i++) {
+            const recipeCard = document.createElement('div');
+            recipeCard.classList.add('recipe-card'); // Add recipe-card class
+            recipeCard.style.animationDelay = `${i * 0.1}s`; // Add delay for staggered animation
+
+            const recipeName = document.createElement('h4');
+            recipeName.textContent = recipes[i];
+            recipeCard.appendChild(recipeName);
+
+            recipesContainer.appendChild(recipeCard);
         }
+
+        recommendedRecipesContainer.appendChild(recipesContainer);
+    } else {
+        const message = document.createElement('p');
+        message.textContent = 'No recipes found.';
+        recommendedRecipesContainer.appendChild(message);
+    }
+}
+
+
 
     </script>
 </body>
