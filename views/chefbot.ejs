@@ -85,24 +85,21 @@
             background-color: #0d5c3e;
         }
         @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.recipe-card {
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.5s ease-in-out; /* Add animation to recipe card */
-}
-
-
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .recipe-card {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out; /* Add animation to recipe card */
+        }
         .recipe-card h4 {
             margin: 0;
             color: #147c53;
@@ -114,7 +111,35 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 20px;
         }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
 
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        
     </style>
 
 </head>
@@ -136,7 +161,15 @@
 
         <div id="recommendedRecipes"></div>
     </div>
-      
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">X</span>
+            <h3 id="recipeName"></h3>
+            <p id="recipeInfo"></p>
+          
+        </div>
+    </div>
+    
     <script>
         const tagsContainer = document.getElementById('tagsContainer');
         const userInputForm = document.getElementById('userInputForm');
@@ -195,38 +228,65 @@
         });
 
         function displayRecommendedRecipes(recipes) {
-    const recommendedRecipesContainer = document.getElementById('recommendedRecipes');
-    recommendedRecipesContainer.innerHTML = '';
+            const recommendedRecipesContainer = document.getElementById('recommendedRecipes');
+            recommendedRecipesContainer.innerHTML = '';
 
-    if (recipes.length > 0) {
-        const heading = document.createElement('h3');
-        heading.textContent = 'Recommended Recipes:';
-        recommendedRecipesContainer.appendChild(heading);
+            if (recipes.length > 0) {
+                const heading = document.createElement('h3');
+                heading.textContent = 'Recommended Recipes:';
+                recommendedRecipesContainer.appendChild(heading);
 
-        const recipesContainer = document.createElement('div');
-        recipesContainer.classList.add('recipes-container');
+                const recipesContainer = document.createElement('div');
+                recipesContainer.classList.add('recipes-container');
 
-        for (let i = 0; i < Math.min(3, recipes.length); i++) {
-            const recipeCard = document.createElement('div');
-            recipeCard.classList.add('recipe-card'); // Add recipe-card class
-            recipeCard.style.animationDelay = `${i * 0.1}s`; // Add delay for staggered animation
+                for (let i = 0; i < Math.min(3, recipes.length); i++) {
 
-            const recipeName = document.createElement('h4');
-            recipeName.textContent = recipes[i];
-            recipeCard.appendChild(recipeName);
+                    const recipeCard = document.createElement('div');
+                    recipeCard.classList.add('recipe-card'); // Add recipe-card class
+                    recipeCard.style.animationDelay = `${i * 0.1}s`; // Add delay for staggered animation
+                    recipeCard.id = recipes[i]
+                    const recipeName = document.createElement('h4');
+                    recipeName.textContent = recipes[i];
+                    recipeCard.appendChild(recipeName);
 
-            recipesContainer.appendChild(recipeCard);
+                    recipesContainer.appendChild(recipeCard);
+                    recipeCard.addEventListener('click', () => {
+                                openPopup(recipes[i]);
+                    });
+                }
+
+                recommendedRecipesContainer.appendChild(recipesContainer);
+            } else {
+                const message = document.createElement('p');
+                message.textContent = 'No recipes found.';
+                recommendedRecipesContainer.appendChild(message);
+            }
         }
 
-        recommendedRecipesContainer.appendChild(recipesContainer);
-    } else {
-        const message = document.createElement('p');
-        message.textContent = 'No recipes found.';
-        recommendedRecipesContainer.appendChild(message);
-    }
-}
+        function openPopup(recipeName) {
+            // Make the API call with the recipeName
+            fetch('http://localhost:5000/recipe?name=' + encodeURIComponent(recipeName))
+                .then(response => response.json())
+                .then(data => {
+                    const recipeNameElement = document.getElementById('recipeName');
+                    const recipeInfoElement = document.getElementById('recipeInfo');
 
+                    recipeNameElement.textContent = recipeName;
+                    recipeInfoElement.textContent = data.recipe;
 
+                    const popup = document.getElementById('popup');
+                    popup.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error fetching recipe:', error);
+                    alert('An error occurred while fetching the recipe.');
+                });
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
 
     </script>
 </body>
