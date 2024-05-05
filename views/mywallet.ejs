@@ -86,6 +86,11 @@
             display: block;
             margin: 0 auto;
         }
+        .small-toast {
+        font-size: 7px; /* Adjust the font size as needed */
+        /* padding: 1px; Adjust the padding as needed */
+        width: 10%; /* Set the width to 100% to make it a strip */
+        }
 
         .add-money-button:hover,
         .withdraw-money-button:hover {
@@ -129,8 +134,9 @@
             <button id="withdrawMoneyButton" class="withdraw-money-button">Withdraw Money</button>
         </div>
     </div>
-
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        
         document.addEventListener('DOMContentLoaded', function () {
           const addMoneyButton = document.getElementById('addMoneyButton');
           const amountToAddInput = document.getElementById('amountToAdd');
@@ -156,19 +162,43 @@
                 },
                 body: JSON.stringify({ amount }),
               });
-        
+              console.log(response);
               const data = await response.json();
-        
+              console.log(data)
               if (data.success) {
                 // Update the displayed wallet balance
                 walletBalanceSpan.textContent = (parseFloat(walletBalanceSpan.textContent) + parseFloat(amount)).toFixed(2);
-                alert(data.message);
+                Swal.fire({
+                        title: 'Money added to the wallet successfully',
+                        // text: 'Item added to cart successfully',
+                        icon: 'success',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                });
               } else {
-                alert(data.error);
+                Swal.fire({
+                        title: 'Error adding money to the wallet',
+                        // text: 'Item added to cart successfully',
+                        icon: 'error',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    });
               }
             } catch (error) {
               console.error('Error adding money to wallet:', error);
-              alert('An error occurred. Please try again.');
+              Swal.fire({
+                        title: 'Internal server error',
+                        // text: 'Item added to cart successfully',
+                        icon: 'error',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+              });
             }
           });
           
