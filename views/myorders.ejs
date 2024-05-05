@@ -144,6 +144,11 @@
         .remove-button{
             background-color: grey;
         }
+        .small-toast {
+        font-size: 7px; /* Adjust the font size as needed */
+        /* padding: 1px; Adjust the padding as needed */
+        width: 10%; /* Set the width to 100% to make it a strip */
+        }
     </style>
 </head>
 <body>
@@ -179,7 +184,7 @@
                     <p>Payment Mode: <%= order.paymentMethod %></p>
                     <% if (order.status === 'Delivered') { %>
                         <!-- Display "cancel Order" button -->
-                        <a href="#" class="remove-button" onclick="cancelOrder('<%= order._id %>')">Remove Order</a>
+                        <a href="#" class="remove-button" onclick="removeOrder('<%= order._id %>')">Remove Order</a>
 
                     <%}
                     else{%>
@@ -192,6 +197,8 @@
             <% }); %>
         <% } %>
     </div>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <script>
         
@@ -208,15 +215,99 @@
                     if (orderItem) {
                         orderItem.remove();
                     }
-                    alert("Order cancelled succesfully");
+                    Swal.fire({
+                        title: 'Order cancelled successfully',
+                        // text: 'Item added to cart successfully',
+                        icon: 'success',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    }).then((result) => {
+    if (result.dismiss === Swal.DismissReason.timer) {
+      window.location.href = '/myorders'; 
+  }});
+           
                 } else {
                     // Handle cancel order failure (e.g., show an error message)
                     console.error('Cancel order failed:', data.error);
-                    alert("Order once shipped cannot be canceled");
+                    Swal.fire({
+                        title: 'Order once shipped cannot be cancelled',
+                        // text: 'Item added to cart successfully',
+                        icon: 'warning',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    });
                 }
+                // Reload the page
             })
             .catch(error => {
-                console.error('Error canceling order:', error);
+                Swal.fire({
+                        title: 'Internal server error',
+                        // text: 'Item added to cart successfully',
+                        icon: 'error',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                });
+            });
+        }
+
+        function removeOrder(orderId) {
+            // Send a request to your server to cancel the order by orderId
+            fetch(`/remove-order/${orderId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Order successfully canceled, remove the order from the UI
+                    const orderItem = document.querySelector(`.order-item[data-id="${orderId}"]`);
+                    if (orderItem) {
+                        orderItem.remove();
+                    }
+                    Swal.fire({
+                        title: 'Order removed successfully',
+                        // text: 'Item added to cart successfully',
+                        icon: 'success',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.href = '/myorders'; 
+                    }});
+                            
+                                        
+                } else {
+                    // Handle cancel order failure (e.g., show an error message)
+                    console.error('Remove order failed:', data.error);
+                    Swal.fire({
+                        title: 'Order once shipped cannot be cancelled',
+                        // text: 'Item added to cart successfully',
+                        icon: 'warning',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    });
+                }
+                // Reload the page
+            })
+            .catch(error => {
+                Swal.fire({
+                        title: 'Internal server error',
+                        // text: 'Item added to cart successfully',
+                        icon: 'error',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                });
             });
         }
     </script>
