@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
     
-    
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/e0dabf3899.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
@@ -384,6 +383,16 @@
         /* padding: 1px; Adjust the padding as needed */
         width: 10%; /* Set the width to 100% to make it a strip */
         }
+        #chatbotFrame {
+            border: none;
+           
+        }
+
+        /* Set iframe dimensions */
+        #chatbotFrame {
+            width: 400px; /* Adjust width as needed */
+            height: 700px; /* Adjust height as needed */
+        }
 
 
     </style>
@@ -428,7 +437,11 @@
             <a href="/myorders">My Orders</a>
             <a href="#contactus">Contact</a>
             <a href="#hotdeals">Hot Deals <i class="fa-solid fa-fire" style="color: #ff0000;"></i></a>
+            
+           
         </div>
+      
+        </script>
         <div class="sub-header-right">
             <a href="#"><i class="fa-brands fa-facebook fa-xl" style="color: #a1d9c3;"></i></a>
             <a href="#"><i class="fa-brands fa-instagram fa-xl" style="color: #a1d9c3;"></i></a>
@@ -591,8 +604,6 @@
     <!--My Cart (Only for Testing Add to Cart button functionality)-->
 
     
-    
-    
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
     <!--Script for sliding presentation-->
@@ -645,7 +656,15 @@
                         customClass: 'small-toast', // Apply your custom CSS class
                     });
                 } else {
-                    alert("Failed to add items to the cart. Please try again!");
+                    Swal.fire({
+                        title: 'Problem adding items to the cart',
+                        // text: 'Item added to cart successfully',
+                        icon: 'error',
+                        position: 'top-end', // Adjust the position as needed
+                        showConfirmButton: false,
+                        timer: 1500, // Display time for the notification (in milliseconds)
+                        customClass: 'small-toast', // Apply your custom CSS class
+                    });
                 }
             }
             
