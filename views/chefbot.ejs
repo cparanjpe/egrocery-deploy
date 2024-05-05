@@ -139,6 +139,52 @@
             right: 10px;
             cursor: pointer;
         }
+        .recipe-card {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out; /* Add animation to recipe card */
+            transition: transform 0.3s; /* Add transition for smooth hover effect */
+            cursor: pointer;
+        }
+
+        .recipe-card:hover {
+            transform: scale(1.05); /* Scale up the card on hover */
+        }
+        .loading-container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.loading-gif-container {
+    width: 150px; /* Set the width of the container */
+    height: 150px; /* Set the height of the container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 50%; /* Make the container round */
+}
+
+.loading-gif {
+    max-width: 100px; /* Set the maximum width of the loading gif */
+    max-height: 100px; /* Set the maximum height of the loading gif */
+}
+
+
+
+        
+
         
     </style>
 
@@ -169,7 +215,13 @@
           
         </div>
     </div>
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-gif-container">
+            <img src="./cooking.gif" alt="Loading..." class="loading-gif">
+        </div>
+    </div>
     
+ 
     <script>
         const tagsContainer = document.getElementById('tagsContainer');
         const userInputForm = document.getElementById('userInputForm');
@@ -264,24 +316,31 @@
         }
 
         function openPopup(recipeName) {
-            // Make the API call with the recipeName
-            fetch('http://localhost:5000/recipe?name=' + encodeURIComponent(recipeName))
-                .then(response => response.json())
-                .then(data => {
-                    const recipeNameElement = document.getElementById('recipeName');
-                    const recipeInfoElement = document.getElementById('recipeInfo');
+    const loadingContainer = document.getElementById('loadingContainer');
+    loadingContainer.style.display = 'flex'; // Show loading animation
 
-                    recipeNameElement.textContent = recipeName;
-                    recipeInfoElement.textContent = data.recipe;
+    // Make the API call with the recipeName
+    fetch('http://localhost:5000/recipe?name=' + encodeURIComponent(recipeName))
+        .then(response => response.json())
+        .then(data => {
+            const recipeNameElement = document.getElementById('recipeName');
+            const recipeInfoElement = document.getElementById('recipeInfo');
 
-                    const popup = document.getElementById('popup');
-                    popup.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error fetching recipe:', error);
-                    alert('An error occurred while fetching the recipe.');
-                });
-        }
+            recipeNameElement.textContent = recipeName;
+            recipeInfoElement.textContent = data.recipe;
+
+            const popup = document.getElementById('popup');
+            popup.style.display = 'block';
+
+            loadingContainer.style.display = 'none'; // Hide loading animation
+        })
+        .catch(error => {
+            console.error('Error fetching recipe:', error);
+            alert('An error occurred while fetching the recipe.');
+            loadingContainer.style.display = 'none'; // Hide loading animation on error
+        });
+}
+
 
         function closePopup() {
             const popup = document.getElementById('popup');
