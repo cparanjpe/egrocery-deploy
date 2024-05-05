@@ -1,13 +1,25 @@
 const express = require('express');
+const cors = require('cors')
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const User = require('./models/User');
 const cookieParser = require('cookie-parser');
+const {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} = require("@google/generative-ai");
+
 const { requireAuth } = require('./middleware/authMiddleware');
 const { OpenAI } = require('openai');
 const _ = require('lodash');
 require('dotenv').config();
 const app = express();
+app.use(cors({
+  origin:'http://localhost:5500'
+}))
+const MODEL_NAME = "gemini-1.5-pro-latest";
+const API_KEY = process.env.GOOGLE_API_KEY;
 const cartSchema = new mongoose.Schema({
   id: {
     type: String,
@@ -456,6 +468,31 @@ app.delete('/cancel-order/:orderId', requireAuth, async (req, res) => {
   }
 });
 
+app.delete('/remove-order/:orderId', requireAuth, async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const userId = req.user;
+
+    // Retrieve the canceled order
+    const order = await Order.findOne({ _id: orderId, id: userId });
+
+    if (!order) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+    if(order.status === 'Shipped'){
+      return res.status(400).json({ success: false, error: 'Cannot cancel order that has been shipped' });
+    }
+
+    // Delete the canceled order
+    await Order.deleteOne({ _id: orderId });
+
+    res.status(200).json({ success: true, message: 'Order canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling order:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
 // ... (previous code)
 
 app.get('/mywallet', requireAuth, async (req, res) => {
@@ -596,22 +633,46 @@ app.post('/api/searchAI',requireAuth,async(req,res)=>{
   const {dish} = req.body;
   console.log(dish);
   try{
-
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
   
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [{"role": "system", "content": "You are a helpful assistant.Return array only no other text or explanations."},
-        {"role": "user", "content": `
-        
-    return extensive list of items used for making dish ${dish} as an array.Return only english name.Use specific name of spices.Use specific name of vegetables.Do not return water.Make sure that first letter is always capital.if nothing present in the list return empty object.Do not nest`},
-        ],
-  });
+    const generationConfig = {
+      temperature: 1,
+      topK: 0,
+      topP: 0.95,
+      maxOutputTokens: 8192,
+    };
   
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+    ];
+    const chat = model.startChat({
+      generationConfig,
+      safetySettings,
+      history: [
+      ],
+    });
+    prompt = "Strictly return an array of ingredients required for making the dish" + " "+dish+".Just return the array like this : [ingredient1,ingredient2,ingredient3 and so on..].Do not give back ticks. "
+    const result = await chat.sendMessage(prompt);
+    const response = result.response.text();
+    const dishItems = response.replace(/`/g, '');
+    console.log(dishItems);
 
-  // console.log(response.choices[0].message.content);
-  const dishItems = response.choices[0].message.content;
-  console.log("dishItems=>",dishItems);
-  console.log(typeof(dishItems));
   const itemms = JSON.parse(dishItems);
   if(itemms.length >0){
     let finalmatch = [];
@@ -694,7 +755,7 @@ catch(error){
   
 }
 })
-app.get('/chefbot',requireAuth,async(req,res)=>{
+app.get('/chefbot',async(req,res)=>{
   try{
     res.render('chefbot');
   }catch(error){
