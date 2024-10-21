@@ -601,23 +601,52 @@ app.post('/api/searchAI',requireAuth,async(req,res)=>{
   const {dish} = req.body;
   console.log(dish);
   try{
-
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
   
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [{"role": "system", "content": "You are a helpful assistant.Return array only no other text or explanations."},
-        {"role": "user", "content": `
-        
-    return extensive list of items used for making dish ${dish} as an array.Return only english name.Use specific name of spices.Use specific name of vegetables.Do not return water.Make sure that first letter is always capital.if nothing present in the list return empty object.Do not nest`},
-        ],
-  });
+    const generationConfig = {
+      temperature: 1,
+      topK: 0,
+      topP: 0.95,
+      maxOutputTokens: 8192,
+    };
   
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+    ];
+    const chat = model.startChat({
+      generationConfig,
+      safetySettings,
+      history: [
+      ],
+    });
+    // prompt = "Strictly return an array of ingredients required for making the dish" + " "+dish+".Just return the array like this : [ingredient1,ingredient2,ingredient3 and so on..].Do not give back ticks. "
+    prompt = "Strictly return an array of ingredients required for making the dish" + " "+dish+".Just strictly return JSON array having english names without quantity. "
+    const result = await chat.sendMessage(prompt);
+    const response = result.response.text();
+    let dishItems = response.replace(/`/g, '');
+    console.log("dishItems",dishItems);
+    console.log("type",typeof(dishItems));
+    dishItems = ""+ dishItems+"";  
+    
 
-  // console.log(response.choices[0].message.content);
-  const dishItems = response.choices[0].message.content;
-  console.log("dishItems=>",dishItems);
-  console.log(typeof(dishItems));
   const itemms = JSON.parse(dishItems);
+  // const itemms = dishItems;
   if(itemms.length >0){
     let finalmatch = [];
     itemms.forEach((item)=>{
