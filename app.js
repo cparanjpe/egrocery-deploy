@@ -667,7 +667,7 @@ app.post('/api/searchAI',requireAuth,async(req,res)=>{
       history: [
       ],
     });
-    prompt = "Strictly return an array of ingredients required for making the dish" + " "+dish+".Just return the array like this : [ingredient1,ingredient2,ingredient3 and so on..].Do not give back ticks. "
+    prompt = "Strictly return an array of ingredients required for making the dish" + " "+dish+".Just strictly return JSON array having english names without quantity. "
     const result = await chat.sendMessage(prompt);
     const response = result.response.text();
     const dishItems = response.replace(/`/g, '');
